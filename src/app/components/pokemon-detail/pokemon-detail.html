@@ -1,0 +1,76 @@
+@if (loading()) {
+  <div class="loading-container">
+    <div class="pokeball-spinner"></div>
+    <p>Cargando...</p>
+  </div>
+} @else if (pokemon(); as p) {
+  <div class="detail-page" [style.background]="bgGradient">
+    <button class="back-btn" (click)="goBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Volver
+    </button>
+
+    <div class="pokemon-hero">
+      <div class="hero-info">
+        <span class="pokemon-id">{{ formatId(p.id) }}</span>
+        <h1 class="pokemon-name">{{ p.name }}</h1>
+        <div class="pokemon-types">
+          @for (t of p.types; track t.slot) {
+            <span class="type-badge" [style.background-color]="getTypeColor(t.type.name)">
+              {{ t.type.name }}
+            </span>
+          }
+        </div>
+        <p class="pokemon-genus">{{ genus }}</p>
+      </div>
+      <div class="hero-image">
+        <div class="pokeball-bg-large"></div>
+        <img [src]="artworkUrl" [alt]="p.name" />
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <p class="description">{{ description }}</p>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Altura</span>
+          <span class="info-value">{{ formatHeight(p.height) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Peso</span>
+          <span class="info-value">{{ formatWeight(p.weight) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Habilidades</span>
+          <span class="info-value abilities">
+            @for (a of p.abilities; track a.ability.name) {
+              <span class="ability" [class.hidden-ability]="a.is_hidden">
+                {{ a.ability.name }}@if (a.is_hidden) { <small>(oculta)</small>}
+              </span>
+            }
+          </span>
+        </div>
+      </div>
+
+      <h2 class="section-title">Estadisticas Base</h2>
+      <div class="stats">
+        @for (stat of p.stats; track stat.stat.name) {
+          <div class="stat-row">
+            <span class="stat-name">{{ getStatName(stat.stat.name) }}</span>
+            <span class="stat-value">{{ stat.base_stat }}</span>
+            <div class="stat-bar-bg">
+              <div
+                class="stat-bar-fill"
+                [style.width.%]="getStatPercent(stat.base_stat)"
+                [style.background-color]="getStatColor(stat.base_stat)"
+              ></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,32 @@
+<a
+  class="pokemon-card"
+  [routerLink]="['/pokemon', pokemon.id]"
+  [style.background]="cardGradient"
+>
+  <div class="card-header">
+    <span class="pokemon-id">{{ formatId(pokemon.id) }}</span>
+  </div>
+
+  <div class="card-image">
+    <div class="pokeball-bg"></div>
+    <img
+      [src]="artworkUrl"
+      [alt]="pokemon.name"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="card-body">
+    <h3 class="pokemon-name">{{ pokemon.name }}</h3>
+    <div class="pokemon-types">
+      @for (t of pokemon.types; track t.slot) {
+        <span
+          class="type-badge"
+          [style.background-color]="getTypeColor(t.type.name)"
+        >
+          {{ t.type.name }}
+        </span>
+      }
+    </div>
+  </div>
+</a>
