@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐱 KuteLynx Projects</title>
+  <meta name="description" content="Proyectos de KuteLynx — Pokedex, Beatbox Studio y más">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a2e;
+      --neon-pink: #ff2d75;
+      --neon-cyan: #00f0ff;
+      --neon-purple: #b44dff;
+      --neon-green: #39ff14;
+      --neon-orange: #ff6b2b;
+      --text: #e0e0e0;
+      --text-dim: #888;
+      --glow-pink: 0 0 20px rgba(255,45,117,0.3);
+      --glow-cyan: 0 0 20px rgba(0,240,255,0.3);
+      --glow-purple: 0 0 20px rgba(180,77,255,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(255,45,117,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0,240,255,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 40px;
+    }
+    header .avatar {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 20px rgba(255,45,117,0.3));
+    }
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+    }
+    header .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-top: 8px;
+      letter-spacing: 2px;
+    }
+    header .subtitle span {
+      color: var(--neon-cyan);
+    }
+    .projects-grid {
+      display: grid;
+      gap: 24px;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .project-card.pink::before { background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple)); }
+    .project-card.cyan::before { background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); }
+    .project-card.orange::before { background: linear-gradient(90deg, var(--neon-orange), var(--neon-pink)); }
+    .project-card.green::before { background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); }
+    .project-card.coming-soon { opacity: 0.7; }
+    .project-card.coming-soon:hover { opacity: 0.85; }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .project-icon {
+      font-size: 2rem;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: var(--surface2);
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .project-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .project-title .status {
+      font-size: 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      letter-spacing: 0;
+      vertical-align: middle;
+    }
+    .status.live { background: rgba(57,255,20,0.15); color: var(--neon-green); border: 1px solid rgba(57,255,20,0.3); }
+    .status.coming { background: rgba(255,107,43,0.15); color: var(--neon-orange); border: 1px solid rgba(255,107,43,0.3); }
+    .status.soon { background: rgba(180,77,255,0.15); color: var(--neon-purple); border: 1px solid rgba(180,77,255,0.3); }
+
+    .project-desc {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .tech-tag {
+      font-size: 0.65rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+    .project-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .btn-demo {
+      background: transparent;
+      color: var(--neon-cyan);
+      border: 1px solid var(--neon-cyan);
+    }
+    .btn-demo:hover { background: var(--neon-cyan); color: var(--bg); box-shadow: var(--glow-cyan); }
+    .btn-code {
+      background: transparent;
+      color: var(--neon-purple);
+      border: 1px solid var(--neon-purple);
+    }
+    .btn-code:hover { background: var(--neon-purple); color: var(--bg); box-shadow: var(--glow-purple); }
+    .btn-coming {
+      background: transparent;
+      color: var(--neon-orange);
+      border: 1px solid var(--neon-orange);
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 40px;
+    }
+    footer p {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+    footer .michi {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px 14px; }
+      .project-card { padding: 20px; }
+      .project-header { flex-direction: column; text-align: center; }
+      .project-links { justify-content: center; }
+      .project-links a { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="avatar">🐱</span>
+      <h1>KuteLynx Projects</h1>
+      <p class="subtitle">// <span>fullstack</span> + <span>hacking</span> + <span>caos felino</span> 🐾</p>
+    </header>
+
+    <div class="projects-grid">
+      <!-- Pokedex -->
+      <div class="project-card pink">
+        <div class="project-header">
+          <div class="project-icon">🔴</div>
+          <div>
+            <div class="project-title">
+              Pokédex
+              <span class="status live">● LIVE</span>
+            </div>
+          </div>
+        </div>
+        <p class="project-desc">
+          Explorador de Pokémon construido con Angular 21. Consume la PokéAPI para mostrar
+          lista completa con búsqueda, filtros y detalle de cada Pokémon con stats, tipos y sprites.
+          UI dark mode con diseño responsive.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Angular 21</span>
+          <span class="tech-tag">TypeScript</span>
+          <span class="tech-tag">PokéAPI</span>
+          <span class="tech-tag">SCSS</span>
+        </div>
+        <div class="project-links">
+          <a href="./pokedex/" class="btn-demo">🚀 Demo</a>
+          <a href="https://github.com/KuteLynx/pokedex" class="btn-code">📦 Code</a>
+        </div>
+      </div>
+
+      <!-- Beatbox Studio -->
+      <div class="project-card cyan">
+        <div class="project-header">
+          <div class="project-icon">🎵</div>
+          <div>
+            <div class="project-title">
+              Dark Michi Beatbox
+              <span class="status soon">● SOON</span>
+            </div>
+          </div>
+        </div>
+        <p class="project-desc">
+          Beatbox Studio — secuenciador web con pads, grabación y playback.
+          Interfaz neon cyberpunk con visualizador en canvas y presets de ritmos
+          (Boom Bap, Trap, DnB, Reggaeton). Construido con Web Audio API.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Web Audio API</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Canvas</span>
+          <span class="tech-tag">CSS Neon</span>
+        </div>
+        <div class="project-links">
+          <a href="./beatbox/" class="btn-demo">🎧 Preview</a>
+          <a href="https://github.com/KuteLynx/pokedex" class="btn-code">📦 Code</a>
+        </div>
+      </div>
+
+      <!-- LynxMoneyLeaks -->
+      <div class="project-card orange coming-soon">
+        <div class="project-header">
+          <div class="project-icon">💰</div>
+          <div>
+            <div class="project-title">
+              LynxMoneyLeaks
+              <span class="status coming">⚡ COMING SOON</span>
+            </div>
+          </div>
+        </div>
+        <p class="project-desc">
+          Aplicación para gestión y seguimiento de gastos personales. Control de ingresos,
+          egresos, ahorros y estadísticas financieras. En desarrollo activo.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Coming Soon</span>
+        </div>
+        <div class="project-links">
+          <a class="btn-coming">⏳ Próximamente</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span class="michi">🐱</span>
+      <p>Made with 💻 &amp; ☕ by <span style="color:var(--neon-cyan)">KuteLynx</span></p>
+      <p>Dark Michi aprobó este código 🐾</p>
+    </footer>
+  </div>
+</body>
+</html>
